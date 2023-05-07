@@ -1,6 +1,7 @@
 <?php
    session_start();
    include("connection.php");
+   include("custfunction.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,14 +21,16 @@
      <div class = "container my-5">
       <h2>list of customers</h2>
       <a class = "btn btn-primary" href="" role = "button">Slot Booked Customers</a>
-      <br>
-       <table class = "table">
+      
+       
+      <table class = "table">
           <thead>
             <tr>
               <th>customer id</th>
               <th>customer name</th>
               <th>mobile number</th>
               <th>address</th>
+              <th>operation</th>
            </tr>
           </thead>
           <tbody>
@@ -49,25 +52,21 @@
                //<?php foreach ($rows as $row) : 
                $sql = "select * from book_slot";
                //$result = $connection->query($sql);
-               $result = mysqli_query($con,$sql);
-               if(!$result){
-                die("invalid query: ".$connection->error);
-               }
-               while($row = $result->fetch_assoc()){
+               $data = mysqli_query($con,$sql);
+               $total = mysqli_num_rows($data);
+             if($total != 0){
+               while($result = mysqli_fetch_assoc($data)){        
                 echo " 
                     <tr>
-                       <td>$row[cust_id]</td>
-                       <td>$row[cust_name]</td>
-                       <td>$row[phone_no]</td>
-                       <td>$row[address]</td>
-                       <td>
-                          <a class = 'btn btn-primary btn-sm' href = 'custuserdatadel.php?cust_id = $row[cust_id]'>Delete</a>
-                
-                       </td>
+                       <td>".$result['cust_id']."</td>
+                       <td>".$result['cust_name']."</td>
+                       <td>".$result['phone_no']."</td>
+                       <td>".$result['address']."</td>
+                       <td><a href='custuserdatadel.php?cust_id=$result[cust_id]'>Delete</td>
                     </tr>
                       ";
                 }
-               
+               } 
                
             ?>
             <tr>
