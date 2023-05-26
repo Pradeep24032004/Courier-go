@@ -1,5 +1,35 @@
 <?php
+    session_start();
+
+    include("connection.php");
+    //include("custfunction.php");
+ 
+    if($_SERVER['REQUEST_METHOD'] == "POST")
+    {
+        //something was posted
+        $courier_id = $_POST['courier_id'];
+        $status = $_POST['status'];
+        
+       
+ 
+        if(!empty($status) && !isnumeric($courier_id))
+        {
+ 
+            //save to database
+            //$cust_id = random_num(10);
+            $query = "UPDATE complaint_box SET status= '$status' WHERE courier_id = '$courier_id' ";
+ 
+            mysqli_query($con, $query);
+ 
+            header("Location: bookingconfirmed.php");
+            die;
+        }else
+        {
+            echo "Please enter some valid information!";
+        }
+    }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,12 +37,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    
-    <title>user main</title>
+    <title>book slot</title>
 </head>
 <body>
-    <style type = "text/css" >
-              :root {
+    <style type = "text/css">
+                        :root {
   --color-primary: #0073ff;
   --color-white: #e9e9e9;
   --color-black: #141d28;
@@ -25,11 +54,13 @@
   box-sizing: border-box;
 }
 
-        body{
-           background-color:rgb(251,223,82);
-           font-family: sans-serif;
-        }
-        .logo {
+body {
+  background-color:rgb(251,223,82);
+  font-family: sans-serif;
+ 
+}
+
+.logo {
   color: white;
   font-size: 30px;
 }
@@ -121,15 +152,7 @@
   background-image: url(./bg.jpg);
   background-position: center;
 }
-.type1{
-  height: 600px;
-  width: 600px;
-  position:absolute;
-  top : 175px;
-  left: 475px;
-  border-radius: 50%;
-}
-.type2{
+        .type2{
   height:65px;
   width:65px;
   border-radius:400px;
@@ -141,12 +164,13 @@ label.navhead{
   color:white;
   top:6px;
 }
-.swiper{
-    width:61%;
-    height:70%;
-}
-.swiper-slide img{
-    width:100%;
+.type1{
+    height: 200px;
+  width: 200px;
+  position:absolute;
+  top : 125px;
+  left: 670px;
+  border-radius: 50%; 
 }
 .bd-placeholder-img {
         font-size: 1.125rem;
@@ -198,6 +222,35 @@ label.navhead{
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
+      #text{
+		height: 25px;
+		border-radius: 25px;
+		padding: 25px;
+		border: solid thin #aaa;
+		width: 500px;
+        font-size:15px;
+	}
+
+	#button{
+
+		padding: 15px;
+		width: 200px;
+		color: black;
+		background-color: lightblue;
+		border: none;
+        font-size:15px;
+	}
+
+	#box{
+        color:black;
+        font-family: sans-serif;
+		font-size: 8px;
+		background-color:rgb(251, 223, 82);
+		margin: auto;
+		width: 600px;
+		padding: 45px;
+		height: 800px;
+	}
     </style>
     <div class="menu-bar">
     <img src="courier-go-logo.png" alt="" class = "type2">
@@ -208,7 +261,7 @@ label.navhead{
         <li><a href="#">register<i class="fas fa-caret-down"></i></a>
             <div class="dropdown-menu">
                 <ul>
-                  <li><a href="signup.php">user</a></li>
+                  <li><a href="signup.php">convoy</a></li>
                   <li><a href="managersignup.php">manager</a></li>
                   <li><a href="customersignup.php">customer</a></li>
                 </ul>
@@ -217,53 +270,29 @@ label.navhead{
         <li><a href="#">login<i class="fas fa-caret-down"></i></a>
             <div class="dropdown-menu">
                 <ul>
-                  <li><a href="login.php">user</a></li>
+                  <li><a href="login.php">convoy</a></li>
                   <li><a href="managerlogin.php">manager</a></li>
                   <li><a href="customerlogin.php">customer</a></li>
                 </ul>
               </div>
         </li>
-        <li><a href="contact.php">Contact us</a></li>
+        <li><a href="#">Contact us</a></li>
       </ul>
-    </div><main>
-  <div class="container py-4">
-    <header class="pb-3 mb-4 border-bottom">
-      <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-        
-        
-      </a>
-    </header>
-
-    <div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Book Corier Now </h1>
-        <p class="col-md-8 fs-4">Courier go is a shipping logistics solution and a courier service aggregator that helps in delivering products to customers with the help of 17+ courier partners.Courier go  is associated with multiple courier partners through which it offers courier services at affordable prices. Through Shiprocket you get to choose between multiple courier partners and compare delivery prices. For every order and pincode, see live rates and make an informed decision</p>
-        <button class="btn btn-primary btn-lg" type="button" ><a href = "courier.php" class = "btn btn-outline-light btn-lg px-4 me-mid-2">Book Courier</a></button>
-      </div>
     </div>
+    <div id="box">
+		
+		<form method="post">
+			<div style="font-size: 80px;margin: 20px;color: black;">Resolve Complaint Box</div>
+            <h1>courier id</h1>
+			<input id="text" type="number" name="cust_id"><br><br> 
+			
+			<h1>If problem solved(Type 'problem resolved')If problem not solved(Type 'problem not resolved')</h1>
+			<input id="text" type="text" name="src_address"><br><br> <br><br>   
 
-    <div class="row align-items-md-stretch">
-      <div class="col-md-6">
-        <div class="h-100 p-5 text-bg-dark rounded-3">
-          <h2>Customer Slot Booking Details</h2>
-          <p>Parcel Delivery is also now made easy with the revolutionizing approach of courier go, it is now just a few clicks away and will not waste your time with a need to look at your local contacts and directory to find a reliable and fast courier service.</p>
-          <button class="btn btn-outline-light" type="button"><a href = "custuserdata.php" class = "btn btn-outline-light btn-lg px-4 me-mid-2">Check slot bookings</a></button>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="h-100 p-5 bg-light border rounded-3">
-          <h2>Courier go  family</h2>
-          <p>Courier go is one of the most significant services that most people need because there are just times that you can’t do it yourself, and distance is also an issue for some people. There are also reasons, such as being too busy to do it themselves, or sometimes the parcel may be a surprise to the recipient and somewhat brings a hint of excitement as well to the receiver by delivering the parcel via courier.</p>
-          <button class="btn btn-primary btn-lg" type="button"><a href = "couriergofamily.php" class = "btn btn-outline-light btn-lg px-4 me-mid-2">Know More</a></button>
-        </div>
-      </div>
-    </div>
+			<input id="button" type="submit" value="Raise complaint"><br><br>
 
-    <footer class="pt-3 mt-4 text-muted border-top">
-      &copy; 2022
-    </footer>
-  </div>
-</main>
-
+			<a href="custnext.php">Resolved complaint</a><br><br>
+		</form>
+	</div>
 </body>
 </html>
